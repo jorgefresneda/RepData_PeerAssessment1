@@ -79,15 +79,11 @@ df.steps <- aggregate(steps ~ date, df, sum)
 
 hist(df.steps$steps, col="lightblue", main = "Histogram of Total # Steps Taken Each Day",xlab="Total Number of Steps in a Day")
 
-![histogram](https://cloud.githubusercontent.com/assets/10914246/8089856/63a16d7e-0f78-11e5-8eb3-452a5f304f0f.png)
-
 ###Total number of steps in a Day###
 
 qplot(steps, data=df.steps, binwidth = "1", xlab = "Total number of steps taken each day", 
       main = "Steps with binwidth set at 1", na.rm=TRUE) + 
       geom_histogram(colour="darkgreen", aes(fill = ..count..)) 
-
-![histogram2](https://cloud.githubusercontent.com/assets/10914246/8089899/c28a1d9a-0f78-11e5-84ff-f098cb330570.png)
 
 ## What is mean total number of steps taken per day?
 ###Mean number of steps per day###
@@ -136,8 +132,6 @@ df.averages <- aggregate(x=list(steps=df$steps), by=list(interval=df$interval), 
 ggplot(data=df.averages, aes(x=interval, y=steps)) + geom_line() + 
   xlab("Intervals set at 5 minutes") + ylab("Average of steps taken")
   
-![plot1](https://cloud.githubusercontent.com/assets/10914246/8089926/f1e305fc-0f78-11e5-83e3-729a0cb29bf6.png)  
-
 df.averages[which.max(df.averages$steps),]
 
         interval    steps
@@ -192,8 +186,6 @@ myts <- tapply(myfill.df$steps, myfill.df$date)
 
 qplot(myts, binwidth=5, xlab="Total Number of Steps per Day",main="Total Number of Steps per Day After Imputation" )
 
-![histogram3](https://cloud.githubusercontent.com/assets/10914246/8089978/27e7455a-0f79-11e5-8372-7e552bf1d8bd.png)
-
 library(psych)
 
 describe(myts)
@@ -243,7 +235,5 @@ head(myfill.df$day)
 avg <- aggregate(steps ~ interval + day, data=myfill.df, mean)
 
 ggplot(avg, aes(interval, steps))+geom_line()+ facet_grid(day ~ .) + xlab("Intervals at 5 minutes") + ylab("# of Steps")
-
-![plot2](https://cloud.githubusercontent.com/assets/10914246/8089996/430ee478-0f79-11e5-949e-1fda9cbb76c5.png)
 
     Weekday steps start out similar to the weekend steps. The difference is that more regular paterns occur in the weekend steps perhaps because people have time to dedicate to the steps versus obligations that they have during the weekdays.
