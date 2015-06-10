@@ -7,19 +7,235 @@ output:
 
 
 ## Loading and preprocessing the data
+library(ggplot2)
 
+library(xtable)
+
+df.1 <- read.csv(file="C:\\Users\\jef78\\Desktop\\activity.csv")
+
+
+
+###Checking first 5 rows###
+
+h.noproc <- head(df.1, 5)
+
+h.noproc <- xtable(h.noproc, caption="First 5 rows: non-processed", label="Head Xtable", digits=1)
+
+print(h.noproc, include.rownames = TRUE, caption.placement="top")
+
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jun 10 10:40:42 2015
+\begin{table}[ht]
+\centering
+\caption{First 5 rows: non-processed} 
+\label{Head Xtable}
+\begin{tabular}{rrlr}
+  \hline
+ & steps & date & interval \\ 
+  \hline
+1 &  & 2012-10-01 &  0 \\ 
+  2 &  & 2012-10-01 &  5 \\ 
+  3 &  & 2012-10-01 & 10 \\ 
+  4 &  & 2012-10-01 & 15 \\ 
+  5 &  & 2012-10-01 & 20 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+###Removing NAs from data###
+
+df <- na.omit(df.1)
+
+h.proc <- head(df, 5)
+
+h.proc <- xtable(h.proc, caption="First 5 rows: processed", label="HeadP Xtable", digits=1)
+
+print(h.proc, include.rownames = TRUE, caption.placement="top")
+
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jun 10 10:45:58 2015
+\begin{table}[ht]
+\centering
+\caption{First 5 rows: processed} 
+\label{HeadP Xtable}
+\begin{tabular}{rrlr}
+  \hline
+ & steps & date & interval \\ 
+  \hline
+289 &  0 & 2012-10-02 &  0 \\ 
+  290 &  0 & 2012-10-02 &  5 \\ 
+  291 &  0 & 2012-10-02 & 10 \\ 
+  292 &  0 & 2012-10-02 & 15 \\ 
+  293 &  0 & 2012-10-02 & 20 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+###Histogram number of steps taken each day###
+
+df.steps <- aggregate(steps ~ date, df, sum)
+
+hist(df.steps$steps, col="lightblue", main = "Histogram of Total # Steps Taken Each Day",xlab="Total Number of Steps in a Day")
+
+
+###Total number of steps in a Day###
+
+qplot(steps, data=df.steps, binwidth = "1", xlab = "Total number of steps taken each day", 
+      main = "Steps with binwidth set at 1", na.rm=TRUE) + 
+      geom_histogram(colour="darkgreen", aes(fill = ..count..)) 
 
 
 ## What is mean total number of steps taken per day?
+###Mean number of steps per day###
 
+mean(df.steps$steps)
+
+[1] 10766.19
+
+median(df.steps$steps)
+
+[1] 10765
+
+desc <- summary(df.steps) #from the psych library
+
+desc <- xtable(desc, caption="Summary Statistics for Data",label="Description Xtable", digits=1)
+
+print(desc, include.rownames = TRUE, caption.placement="top")
+
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Wed Jun 10 11:10:00 2015
+\begin{table}[ht]
+\centering
+\caption{Summary Statistics for Data} 
+\label{Description Xtable}
+\begin{tabular}{rll}
+  \hline
+ &         date &     steps \\ 
+  \hline
+1 & 2012-10-02: 1   & Min.   :   41   \\ 
+  2 & 2012-10-03: 1   & 1st Qu.: 8841   \\ 
+  3 & 2012-10-04: 1   & Median :10765   \\ 
+  4 & 2012-10-05: 1   & Mean   :10766   \\ 
+  5 & 2012-10-06: 1   & 3rd Qu.:13294   \\ 
+  6 & 2012-10-07: 1   & Max.   :21194   \\ 
+  7 & (Other)   :47   &  \\ 
+   \hline
+\end{tabular}
+\end{table}
 
 
 ## What is the average daily activity pattern?
+###Average Daily Pattern###
 
+df.averages <- aggregate(x=list(steps=df$steps), by=list(interval=df$interval), FUN=mean)
+
+ggplot(data=df.averages, aes(x=interval, y=steps)) + geom_line() + 
+  xlab("Intervals set at 5 minutes") + ylab("Average of steps taken")
+
+df.averages[which.max(df.averages$steps),]
+
+    interval    steps
+104      835 206.1698
 
 
 ## Imputing missing values
+###Imput of Missing Values###
 
+df.missing <- is.na(df$steps)
+
+num.missing <- sum(df.missing)
+
+table(df.missing)
+
+df.missing
+FALSE 
+15264 
+
+table (num.missing)
+
+num.missing
+0 
+1 
+
+###Replace missing values with mean value of 5-minute intervals###
+
+nafiller <- function(steps, interval){
+  filler <- NA
+  if (!is.na(steps))
+    filler <- c(steps)
+  else
+    filler <- (df.averages[df.averages$interval==interval, "steps"])
+  return(filler)
+}
+
+myfill.df <- df
+
+myfill.df$steps <- mapply(nafiller, myfill.df$steps, myfill.df$interval)
+
+head(myfill.df)
+
+steps       date interval
+289     0 2012-10-02        0
+290     0 2012-10-02        5
+291     0 2012-10-02       10
+292     0 2012-10-02       15
+293     0 2012-10-02       20
+294     0 2012-10-02       25
+
+myts <- tapply(myfill.df$steps, myfill.df$date)
+
+qplot(myts, binwidth=5, xlab="Total Number of Steps per Day",main="Total Number of Steps per Day After Imputation" )
+
+library(psych)
+
+describe(myts)
+
+  vars     n  mean    sd median trimmed   mad min max range skew
+1    1 15264 30.72 17.47     29   30.65 22.24   2  60    58 0.08
+  kurtosis   se
+1    -1.26 0.14
+
+mean(myts)
+
+[1] 30.71698
+
+median(myts)
+
+[1] 29
+
+summary(myts)
+
+ Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.00   16.00   29.00   30.72   47.00   60.00 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+###Differences in activity patterns###
+
+week.identify <- function(date){
+ day <- weekdays(date)
+ if (day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))
+   return("Weekday")
+ else if (day %in% c("Saturday", "Sunday"))
+   return("Weekend")
+ else
+   stop("Invalid Date")
+}  
+
+myfill.df$date <- as.Date(myfill.df$date)
+
+myfill.df$day <- sapply(myfill.df$date, FUN=week.identify)
+
+head(myfill.df$day)
+
+[1] "Weekday" "Weekday" "Weekday" "Weekday" "Weekday" "Weekday"
+
+###Visually explore the data###
+
+avg <- aggregate(steps ~ interval + day, data=myfill.df, mean)
+
+ggplot(avg, aes(interval, steps))+geom_line()+ facet_grid(day ~ .) + xlab("Intervals at 5 minutes") + ylab("# of Steps")
+
+Weekday steps start out similar to the weekend steps. The difference is that more regular paterns occur in the weekend steps perhaps because people have time to dedicate to the steps versus obligations that they have during the weekdays.
