@@ -238,4 +238,4 @@ avg <- aggregate(steps ~ interval + day, data=myfill.df, mean)
 
 ggplot(avg, aes(interval, steps))+geom_line()+ facet_grid(day ~ .) + xlab("Intervals at 5 minutes") + ylab("# of Steps")
 
-Weekday steps start out similar to the weekend steps. The difference is that more regular paterns occur in the weekend steps perhaps because people have time to dedicate to the steps versus obligations that they have during the weekdays.
+    Weekday steps start out similar to the weekend steps. The difference is that more regular paterns occur in the weekend steps perhaps because people have time to dedicate to the steps versus obligations that they have during the weekdays.
