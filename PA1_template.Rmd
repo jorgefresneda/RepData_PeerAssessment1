@@ -13,7 +13,7 @@ df.1 <- read.csv(file="C:\\Users\\jef78\\Desktop\\activity.csv")
 
 
 
-##Checking first 5 rows##
+####Checking first 5 rows####
 
 h.noproc <- head(df.1, 5)
 
