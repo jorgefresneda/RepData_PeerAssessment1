@@ -79,6 +79,7 @@ df.steps <- aggregate(steps ~ date, df, sum)
 
 hist(df.steps$steps, col="lightblue", main = "Histogram of Total # Steps Taken Each Day",xlab="Total Number of Steps in a Day")
 
+![histogram](https://cloud.githubusercontent.com/assets/10914246/8089856/63a16d7e-0f78-11e5-8eb3-452a5f304f0f.png)
 
 ###Total number of steps in a Day###
 
