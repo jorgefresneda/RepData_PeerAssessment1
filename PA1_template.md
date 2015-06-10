@@ -1,5 +1,5 @@
 
-## Loading and preprocessing the data
+# Loading and preprocessing the data
 library(ggplot2)
 
 library(xtable)
@@ -82,7 +82,7 @@ qplot(steps, data=df.steps, binwidth = "1", xlab = "Total number of steps taken 
 
 ![histogram2](https://cloud.githubusercontent.com/assets/10914246/8089899/c28a1d9a-0f78-11e5-84ff-f098cb330570.png)
 
-## What is mean total number of steps taken per day?
+# What is mean total number of steps taken per day?
 ###Mean number of steps per day###
 
 mean(df.steps$steps)
@@ -121,7 +121,7 @@ print(desc, include.rownames = TRUE, caption.placement="top")
     \end{table}
 
 
-## What is the average daily activity pattern?
+# What is the average daily activity pattern?
 ###Average Daily Pattern###
 
 df.averages <- aggregate(x=list(steps=df$steps), by=list(interval=df$interval), FUN=mean)
@@ -137,7 +137,7 @@ df.averages[which.max(df.averages$steps),]
     104      835 206.1698
 
 
-## Imputing missing values
+# Imputing missing values
 ###Imput of Missing Values###
 
 df.missing <- is.na(df$steps)
@@ -210,7 +210,7 @@ summary(myts)
        2.00   16.00   29.00   30.72   47.00   60.00 
 
 
-## Are there differences in activity patterns between weekdays and weekends?
+# Are there differences in activity patterns between weekdays and weekends?
 ###Differences in activity patterns###
 
 week.identify <- function(date){
